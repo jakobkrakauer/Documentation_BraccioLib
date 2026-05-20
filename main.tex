@@ -1,0 +1,190 @@
+\documentclass[12pt,a4paper]{article}
+
+% =========================
+% Pakete
+% =========================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{hyperref}
+
+\geometry{
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\onehalfspacing
+
+% =========================
+% Literaturverwaltung
+% =========================
+
+\usepackage[
+    backend=biber,
+    style=ieee,
+    sorting=none
+]{biblatex}
+
+\addbibresource{literature.bib}
+
+% =========================
+% Dokumentbeginn
+% =========================
+
+\begin{document}
+
+% ==================================================
+% Deckblatt
+% ==================================================
+
+\begin{titlepage}
+    \centering
+
+    % Logo
+    \includegraphics[width=4cm]{fh_logo.jpg}
+
+    \vspace{0.8cm}
+
+    % Titel
+    {\LARGE \textbf{Motion-Control Library für den Arduino Tinkerkit Braccio Roboterarm}\par}
+
+    \vspace{0.8cm}
+
+    {\Large Praxisprojekt \& Portfolio 1\par}
+
+    \vspace{3cm}
+
+    % Studiengang
+    {\large Industrial Informatics \& Robotics\par}
+
+    \vspace{0.4cm}
+
+    {\large Fachhochschule Salzburg GmbH\par}
+
+    \vspace{2.5cm}
+
+    % Name
+    {\large vorgelegt von\par}
+
+
+    {\large Jan Jakob Krakauer\par}
+
+    \vspace{0.5cm}
+
+ 
+    {\large Betreuer: Simon Hoher\par}
+
+    \vfill
+
+    % Datum
+    {\large Puch/Salzburg, Juli 2026\par}
+
+\end{titlepage}
+
+
+
+\tableofcontents
+\newpage
+
+
+\section{Projektbeschreibung}
+
+\begin{itemize}
+    \item Was ist das Problem?
+    \item Warum ist es ein Problem?
+    \item Wie wurde das Problem gelöst?
+    \item Was war das Ergebnis?
+    \item Was bringt das Ergebnis?
+\end{itemize}
+
+
+
+\section{Eigene Rolle im Projekt}
+
+
+\section{Stand der Technik und Forschungslücke}
+
+\subsection{Bestehende Lösungen und Systeme}
+
+Ersteindruck Anhand der Projektbeschreibungen:
+
+Auf GitHub existieren dutzende IK-Implementierungen für Arduino-Roboterarme (cgxeiji, DrehanM, Markku, ShadmanTajwar, edisons3608, ToblerArm u.a.). Diese sind überwiegend projektspezifische Einzellösungen mit 2-4 DOF. Vereinzelt werden FK, IK und Trajektorie kombiniert (edisons3608, ToblerArm), jedoch ohne dokumentierte Library-Architektur und ohne Geschwindigkeitsprofil. Keine der gefundenen Lösungen präsentiert sich als modulare, wiederverwendbare Bibliothek
+
+Etablierte Robotik-Frameworks wie ROS/MoveIt, OROCOS, KDL und pinocchio bieten umfassende Lösungen für Kinematik, Dynamik und Trajektorienplanung, setzen jedoch PC-basierte Hardware und Linux voraus. Für ressourcenbeschränkte Mikrocontroller wie den Arduino Zero sind diese nicht einsetzbar.
+
+\subsection{Ableitung der Systemanforderungen}
+\subsection{Forschungslücke}
+
+
+
+\section{Methoden und Werkzeuge}
+
+\subsection{Werkzeuge} 
+\begin{itemize}
+    \item C++ als Standard
+    \item Arduino IDE und Braccio Library for Arduino als Programmierbasis
+    \item Verwendung des Arduino TinkerKit Braccio Robot als Hardwarebasis
+    \item Entscheidung für Arduino Zero statt anderer Boards (SAMD21, ARM Cortex-M0+)
+    \item Verwendung der Eigen-Bibliothek für effiziente Matrizen- und Vektorberechnungen
+\end{itemize}
+
+\subsection{Angewendete Methoden}
+\begin{itemize}
+    \item Vorwärtskinematik
+    \item Inverse Kinematik
+    \item Trajektorienplanung
+    \item Geschwindigkeitsprofil
+\end{itemize}
+
+\subsection{Literaturrecherche}
+\begin{itemize}
+    \item PRISMA-light
+    \item SearchLog
+    \item ScreeningLog
+    \item Citavi
+\end{itemize}
+
+
+
+
+\section{Ergebnisse und Artefakte}
+
+\subsection{...}
+\subsection{...}
+\subsection{...}
+
+
+
+
+\section{Reflexion und Lernergebnisse}
+
+\subsection{Herausforderungen}
+
+Welche Schwierigkeiten traten auf?
+
+\subsection{Erworbene Fähigkeiten}
+
+Was wurde fachlich und methodisch gelernt?
+
+\subsection{Verbesserungspotenzial}
+
+Was könnte zukünftig besser gemacht werden?
+
+
+% ==================================================
+% Literaturverzeichnis
+% ==================================================
+
+\newpage
+\printbibliography
+
+\end{document}
