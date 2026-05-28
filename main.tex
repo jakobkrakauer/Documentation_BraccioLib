@@ -91,7 +91,6 @@
 \end{titlepage}
 
 
-
 \tableofcontents
 \newpage
 
@@ -107,73 +106,89 @@
 \end{itemize}
 
 
-
 \section{Eigene Rolle im Projekt}
+Eigene Rolle – hier sollte beschrieben werden, was die Hauptaufgaben waren – die könnt ihr auch für eure Projekte beschreiben.
 
 
-\section{Stand der Technik und Forschungslücke}
+\section{Theoretische Grundlagen der inversen Kinematik}
+
+
+\section{Methoden und Werkzeuge}
+
+\subsection{Wissenschaftliche Vorgehensweise} 
+
+Ich beschreibe, wie ich das Konzept PRISMA-light umgesetzt habe. Ich habe mir dafür Hilfetools in Excel gebaut. Ich führe also genau auf wie ich vorgegangen bin und verweise am Ende auf die von mir erstellten Tabellen im Anhang.
+
+\begin{itemize}
+    \item PRISMA-light
+    \item SearchLog
+    \item ScreeningLog
+\end{itemize}
+
+
+\subsection{Eingesetzte Hard- und Software}
+
+Hardware:
+\begin{itemize}
+    \item Arduino TinkerKit Braccio Roboterarm
+    \item Arduino Zero (SAMD21)
+\end{itemize}
+
+Software/Entwicklung:
+\begin{itemize}
+    \item Arduino IDE
+    \item Braccio Library for Arduino (Basis-Library)
+    \item C++
+    \item Git (Versionskontrolle der Library und Dokumentation)
+\end{itemize}
+
+Wissenschaftliches Arbeiten:
+\begin{itemize}
+    \item Citavi (Literaturverwaltung)
+    \item Excel (Recherche-Dokumentation: SearchLog, ScreeningLog)
+    \item Overleaf/LaTeX (Dokumentation)
+\end{itemize}
+
+
+\section{Ergebnisse und Artefakte}
 
 \subsection{Bestehende Lösungen und Systeme}
 
 Ersteindruck Anhand der Projektbeschreibungen:
 
-Auf GitHub existieren dutzende IK-Implementierungen für Arduino-Roboterarme (cgxeiji, DrehanM, Markku, ShadmanTajwar, edisons3608, ToblerArm u.a.). Diese sind überwiegend projektspezifische Einzellösungen mit 2-4 DOF. Vereinzelt werden FK, IK und Trajektorie kombiniert (edisons3608, ToblerArm), jedoch ohne dokumentierte Library-Architektur und ohne Geschwindigkeitsprofil. Keine der gefundenen Lösungen präsentiert sich als modulare, wiederverwendbare Bibliothek
+Auf GitHub existieren dutzende IK-Implementierungen für Arduino-Roboterarme (cgxeiji, DrehanM, Markku, ShadmanTajwar, edisons3608, ToblerArm u.a.). Diese sind überwiegend projektspezifische Einzellösungen mit 2-4 DOF. Vereinzelt werden FK, IK und Trajektorie kombiniert (edisons3608, ToblerArm), jedoch ohne dokumentierte Library-Architektur und ohne Geschwindigkeitsprofil. Keine der gefundenen Lösungen präsentiert sich als modulare, wiederverwendbare Bibliothek. \cite{cgxeiji.5172026}
 
 Etablierte Robotik-Frameworks wie ROS/MoveIt, OROCOS, KDL und pinocchio bieten umfassende Lösungen für Kinematik, Dynamik und Trajektorienplanung, setzen jedoch PC-basierte Hardware und Linux voraus. Für ressourcenbeschränkte Mikrocontroller wie den Arduino Zero sind diese nicht einsetzbar.
 
-\subsection{Ableitung der Systemanforderungen}
-\subsection{Forschungslücke}
+\subsection{Forschungslücke und Systemanforderungen}
 
+\subsection{Bibliothekskonzept}
 
+\subsection{Entwicklung eines ersten Prototypen}
 
-\section{Methoden und Werkzeuge}
+Für die Implementierung der inversen Kinematik wurde die Open-Source-Library CGx-InverseK von cgxeiji gewählt. Im Rahmen der systematischen Literaturrecherche wurden vier IK-Implementierungen für Arduino-Roboterarme identifiziert. CGx-InverseK stellt dabei die einzige aktive und dokumentierte Lösung dar, die explizit für den Arduino TinkerKit Braccio entwickelt und getestet wurde. Weitere Implementierungen wie DrehanM/inverse-kinematics-solver sind zwar ebenfalls Braccio-spezifisch, werden jedoch seit mehreren Jahren nicht mehr gepflegt. Modulare Alternativen wie edisons3608/robot arm bieten eine umfangreichere Funktionalität (FK, IK, Trajektorienplanung), sind jedoch nicht für den Braccio ausgelegt und erfordern eine aufwändige Anpassung der Gelenkgeometrie.
 
-\subsection{Werkzeuge} 
-\begin{itemize}
-    \item C++ als Standard
-    \item Arduino IDE und Braccio Library for Arduino als Programmierbasis
-    \item Verwendung des Arduino TinkerKit Braccio Robot als Hardwarebasis
-    \item Entscheidung für Arduino Zero statt anderer Boards (SAMD21, ARM Cortex-M0+)
-    \item Verwendung der Eigen-Bibliothek für effiziente Matrizen- und Vektorberechnungen
-\end{itemize}
+// Offset der Schulter über dem Boden
+zinK0 = ziel - hoehe schulter;
+InverseK.solve(x, y, z in K0, ...)
 
-\subsection{Angewendete Methoden}
-\begin{itemize}
-    \item Vorwärtskinematik
-    \item Inverse Kinematik
-    \item Trajektorienplanung
-    \item Geschwindigkeitsprofil
-\end{itemize}
+Ein wichtiger Unterschied zur ursprünglich geplanten DH-basierten Implementierung: CGx-InverseK verwendet keinen Denavit-Hartenberg Formalismus, sondern berechnet die Gelenkwinkel direkt aus den geometrischen Linklängen mittels Kosinussatz. Dies vereinfacht die Implementierung erheblich, da keine 4×4-Transformationsmatrizen aufgestellt werden müssen. Der Nachteil ist eine geringere Allgemeinheit – die Library ist auf 3-Link-Arme mit rotierender Basis beschränkt.
 
-\subsection{Literaturrecherche}
-\begin{itemize}
-    \item PRISMA-light
-    \item SearchLog
-    \item ScreeningLog
-    \item Citavi
-\end{itemize}
-
-
-
-
-\section{Ergebnisse und Artefakte}
-
-\subsection{...}
-\subsection{...}
-\subsection{...}
-
-
-
+Braccio spezifische berechnungen noch in der Kinematics.cpp vorhanden.
 
 \section{Reflexion und Lernergebnisse}
+
+\subsection{Erworbene Fähigkeiten}
+
+Erworbene Fähigkeiten sind Dinge, die du im Rahmen des Projektes gewonnen hast.
+
+Was wurde fachlich und methodisch gelernt?
 
 \subsection{Herausforderungen}
 
 Welche Schwierigkeiten traten auf?
 
-\subsection{Erworbene Fähigkeiten}
-
-Was wurde fachlich und methodisch gelernt?
+Workaround schaffen um library und .ino datei trennen zu können. Welche Lösungsansätze gibt es für dieses Problem? 
 
 \subsection{Verbesserungspotenzial}
 
@@ -181,10 +196,14 @@ Was könnte zukünftig besser gemacht werden?
 
 
 % ==================================================
-% Literaturverzeichnis
+% Literaturverzeichnis und Anhang
 % ==================================================
 
 \newpage
-\printbibliography
+\printbibliography[heading=bibintoc]
+
+\section*{Anhang}
+\addcontentsline{toc}{section}{Anhang}
 
 \end{document}
+
