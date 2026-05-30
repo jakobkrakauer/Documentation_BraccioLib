@@ -15,6 +15,9 @@
 \usepackage{parskip}
 \usepackage{hyperref}
 
+\usepackage{booktabs}   % für \toprule, \midrule, \bottomrule
+\usepackage{tabularx}   % für automatische Spaltenbreite
+
 \geometry{
     left=3cm,
     right=2.5cm,
@@ -119,6 +122,15 @@ Eigene Rolle – hier sollte beschrieben werden, was die Hauptaufgaben waren –
 
 Ich beschreibe, wie ich das Konzept PRISMA-light umgesetzt habe. Ich habe mir dafür Hilfetools in Excel gebaut. Ich führe also genau auf wie ich vorgegangen bin und verweise am Ende auf die von mir erstellten Tabellen im Anhang.
 
+Vorgehensweise für die Sichtung vorhandener Systeme:
+\begin{itemize}
+    \item README — Was behauptet der Autor selbst?
+    \item Haupt-Header-File (.h) — Was sind die public-Methoden? Das sagt dir den Funktionsumfang ohne Code zu lesen
+    \item 1-2 kritische Funktionen — z.B. die Move-Funktion, IK-Funktion
+    \item Beispiel-Sketches — Wie wird's benutzt? Das reicht für deine Tabelle
+    \item 
+\end{itemize}
+
 \begin{itemize}
     \item PRISMA-light
     \item SearchLog
@@ -154,17 +166,97 @@ Wissenschaftliches Arbeiten:
 
 \subsection{Bestehende Lösungen und Systeme}
 
+Nach welchen Kriterien wurden bestehende Lösungen in die Vergleichstabelle mit aufgenommen?
+
+"Die Recherche ergab X Repositories. In die Analyse einbezogen wurden Lösungen, die folgende Kriterien erfüllt haben:
+Arduino-kompatibel (läuft auf Mikrocontroller)
+Implementiert mindestens eine Kernfunktion (FK, IK, Trajektorie, Profil, Kalibrierung)
+Ausreichend dokumentiert (README vorhanden, nachvollziehbar)
+ ... 
+"Eine vollständige Übersicht aller gefundenen Quellen inkl. Ausschlussgründen findet sich in Anhang X."
+
+
+
+
+Wie wurden die Bewertungskategorien der Tabelle festgelegt?
+
+Die Bewertungskategorien der Vergleichstabelle leiten sich aus den im Rahmen der Projektabstimmung definierten Systemanforderungen ab [Anforderungen aufführen]. Anhand dieser Kriterien wurden bestehende Lösungen analysiert.
+
+Was bedeuten die Kathegorien?
+
+\begin{table}[h]
+\centering
+\caption{Vergleichskriterien der analysierten Bibliotheken}
+\label{tab:vergleichskriterien}
+\begin{tabularx}{\textwidth}{>{\bfseries}l X}
+\toprule
+Spalte & Beschreibung \\
+\midrule
+FK 
+  & Berechnet aus Gelenkwinkeln die TCP-Position im Raum \\
+\addlinespace
+IK 
+  & Berechnet aus Zielkoordinaten die erforderlichen Gelenkwinkel -- 
+    inkl.\ verwendete Methode (geometrisch / analytisch / DH-basiert) \\
+\addlinespace
+Trajektorie 
+  & Interpoliert Zwischenpunkte zwischen Start- und Zielkonfiguration \\
+\addlinespace
+Geschwindigkeitsprofil 
+  & Regelt Beschleunigung und Verzögerung für sanfte Bewegungsabläufe \\
+\addlinespace
+Modulare Architektur 
+  & Wiederverwendbarkeit und Erweiterbarkeit der Software \\
+\addlinespace
+Braccio-Kompatibilität 
+  & Braccio-spezifisch (Explizit für den Braccio entwickelt) / Arduino-kompatibel (Läuft direkt auf Arduino oder ist portierbar) / Nicht kompatibel (Andere Plattform, nicht sinnvoll portierbar)
+     \\
+\addlinespace
+Kalibrierung 
+  & Kompensation mechanischer Ungenauigkeiten der Servos \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+
+
+
+
+
+Tabelle
+
+
+
 Ersteindruck Anhand der Projektbeschreibungen:
 
 Auf GitHub existieren dutzende IK-Implementierungen für Arduino-Roboterarme (cgxeiji, DrehanM, Markku, ShadmanTajwar, edisons3608, ToblerArm u.a.). Diese sind überwiegend projektspezifische Einzellösungen mit 2-4 DOF. Vereinzelt werden FK, IK und Trajektorie kombiniert (edisons3608, ToblerArm), jedoch ohne dokumentierte Library-Architektur und ohne Geschwindigkeitsprofil. Keine der gefundenen Lösungen präsentiert sich als modulare, wiederverwendbare Bibliothek. \cite{cgxeiji.5172026}
 
 Etablierte Robotik-Frameworks wie ROS/MoveIt, OROCOS, KDL und pinocchio bieten umfassende Lösungen für Kinematik, Dynamik und Trajektorienplanung, setzen jedoch PC-basierte Hardware und Linux voraus. Für ressourcenbeschränkte Mikrocontroller wie den Arduino Zero sind diese nicht einsetzbar.
 
+
 \subsection{Forschungslücke und Systemanforderungen}
 
 \subsection{Bibliothekskonzept}
 
 \subsection{Entwicklung eines ersten Prototypen}
+
+Technische Kernpunkte
+Was der Code tatsächlich macht:
+
+Löst IK in der vertikalen 2D-Ebene (R-Z-Ebene) via Kosinussatz
+Basiswinkel separat über atan2(y,x)
+Zwei Lösungen geprüft (Elbow-up / Elbow-down) — nimmt erste gültige
+Anflugwinkel phi: entweder fix vorgegeben oder automatisches Scannen in DEGREE_STEP-Schritten
+
+Warum der Arbeitsraum eingeschränkt ist — konkret:
+cppfor (float phi = -DOUBLE_PI; phi < DOUBLE_PI; phi += DEGREE_STEP)
+Das phi-Scanning ist ein Brute-Force-Ansatz — er iteriert durch mögliche Anflugwinkel in festen Schritten. Lösungen die zwischen zwei Schritten liegen werden schlicht verpasst. Kein systematischer Ansatz, keine Optimierung.
+Kein DH-Formalismus: Gelenkwinkel direkt aus Linklängen und Kosinussatz — funktioniert für 3-Link-Arm, aber nicht systematisch erweiterbar auf mehr DOF.
+
+Einschätzung für deine Arbeit
+Die Library ist in der Tabelle als Referenz sinnvoll — sie ist die einzige Braccio-spezifische IK die du bereits implementiert hast. Die Einschränkungen (kein DH, phi-Scanning, kein FK) begründen direkt warum deine Library einen anderen Ansatz braucht.
+
 
 Für die Implementierung der inversen Kinematik wurde die Open-Source-Library CGx-InverseK von cgxeiji gewählt. Im Rahmen der systematischen Literaturrecherche wurden vier IK-Implementierungen für Arduino-Roboterarme identifiziert. CGx-InverseK stellt dabei die einzige aktive und dokumentierte Lösung dar, die explizit für den Arduino TinkerKit Braccio entwickelt und getestet wurde. Weitere Implementierungen wie DrehanM/inverse-kinematics-solver sind zwar ebenfalls Braccio-spezifisch, werden jedoch seit mehreren Jahren nicht mehr gepflegt. Modulare Alternativen wie edisons3608/robot arm bieten eine umfangreichere Funktionalität (FK, IK, Trajektorienplanung), sind jedoch nicht für den Braccio ausgelegt und erfordern eine aufwändige Anpassung der Gelenkgeometrie.
 
@@ -175,6 +267,23 @@ InverseK.solve(x, y, z in K0, ...)
 Ein wichtiger Unterschied zur ursprünglich geplanten DH-basierten Implementierung: CGx-InverseK verwendet keinen Denavit-Hartenberg Formalismus, sondern berechnet die Gelenkwinkel direkt aus den geometrischen Linklängen mittels Kosinussatz. Dies vereinfacht die Implementierung erheblich, da keine 4×4-Transformationsmatrizen aufgestellt werden müssen. Der Nachteil ist eine geringere Allgemeinheit – die Library ist auf 3-Link-Arme mit rotierender Basis beschränkt.
 
 Braccio spezifische berechnungen noch in der Kinematics.cpp vorhanden.
+
+
+Herausforderung 1: Koordinatensystem-Offset
+Der Ursprung von CGx-InverseK liegt bei Gelenk a1 (Schulter), nicht bei der Basis. Die gemessene Schulteröhe von 70mm muss als Offset auf alle z-Koordinaten angewendet werden. Zielkoordinaten unterhalb von 70mm sind daher nicht erreichbar.
+
+Herausforderung 2: IK findet keine Lösung für physisch erreichbare Positionen
+Der Roboter kann per direkter Servo-Ansteuerung Positionen erreichen die die IK als nicht erreichbar markiert. Die genaue Ursache muss noch untersucht werden. 
+TODO: IK Arbeitsraum Analyse
+Die cgxeiji InverseK Library gibt für physisch erreichbare Positionen teilweise false zurück. Die genaue Ursache in der Kosinussatz-Berechnung muss noch untersucht werden. Mögliche Ansätze: Debugging in InverseK.cpp um den genauen Fehlerpunkt zu identifizieren, oder Evaluierung einer alternativen IK-Implementierung.
+
+
+
+
+
+
+Die verwendete CGx-Gcode-RobotArm Library von cgxeiji zeigt einen interessanten Ansatz: Bewegungsbefehle werden im G-Code Format übertragen, wie es auch in industriellen CNC-Systemen und professionellen Robotersteuerungen üblich ist. Der Vorteil liegt in der standardisierten, lesbaren Syntax – G1 X550 Y0 Z150 ist intuitiver als rohe Parameterlisten. Als Ausblick wäre eine Kombination mit YAT denkbar, wobei der User G-Code Befehle direkt im Terminal eingibt und der Arduino diese parst und ausführt.
+
 
 \section{Reflexion und Lernergebnisse}
 
