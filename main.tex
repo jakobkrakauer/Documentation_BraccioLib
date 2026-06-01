@@ -15,8 +15,27 @@
 \usepackage{parskip}
 \usepackage{hyperref}
 
+\usepackage{amssymb}   
+\usepackage{array} 
+\usepackage{pdflscape}
+\usepackage{colortbl}
+\usepackage{xcolor}
+ \usepackage{makecell}
+
 \usepackage{booktabs}   % für \toprule, \midrule, \bottomrule
 \usepackage{tabularx}   % für automatische Spaltenbreite
+
+\usepackage[backend=biber, style=authoryear, urldate=long]{biblatex}
+%  Hilfsbefehle (in der Präambel definieren):
+\newcommand{\ja}{\checkmark}
+\newcommand{\nein}{--}
+\newcommand{\teilw}{$\circ$}
+
+
+
+
+
+\addbibresource{literature.bib}  % dein .bib Dateiname
 
 \geometry{
     left=3cm,
@@ -27,15 +46,19 @@
 
 \onehalfspacing
 
+\definecolor{cellgreen}{RGB}{198,239,206}
+\definecolor{textgreen}{RGB}{0,97,0}
+\definecolor{cellyellow}{RGB}{255,235,156}
+\definecolor{textyellow}{RGB}{156,87,0}
+\definecolor{cellred}{RGB}{255,199,206}
+\definecolor{textred}{RGB}{156,0,6}
+\definecolor{cellgray}{RGB}{242,242,242}
+\definecolor{textgray}{RGB}{63,63,63}
+
 % =========================
 % Literaturverwaltung
 % =========================
 
-\usepackage[
-    backend=biber,
-    style=ieee,
-    sorting=none
-]{biblatex}
 
 \addbibresource{literature.bib}
 
@@ -166,76 +189,233 @@ Wissenschaftliches Arbeiten:
 
 \subsection{Bestehende Lösungen und Systeme}
 
-Nach welchen Kriterien wurden bestehende Lösungen in die Vergleichstabelle mit aufgenommen?
+Im Rahmen der systematischen Literaturrecherche wurde untersucht, ob vergleichbare Open-Source-Lösungen, wie Motion-Control-Libraries oder Frameworks, bereits existieren. In die vergleichende Analyse wurden Lösungen einbezogen, die folgende Kriterien erfüllen: Es handelt sich um eine Arduino-kompatible Open-Source-Implementierung, beinhaltet mindestens eine Kernfunktion und ist ausreichend dokumentiert. Die Auswahl wurde dabei qualitativ bewertet. Lösungen, deren Ansatz trotz Erfüllung der Kriterien keinen Mehrwert boten, wurden ausgeschlossen. Zugleich wurden Implementierungen mit relevantem Funktionsumfang auch dann mit aufgenommen, wenn sie einzelne Kriterien nicht erfüllt hatten. 
 
-"Die Recherche ergab X Repositories. In die Analyse einbezogen wurden Lösungen, die folgende Kriterien erfüllt haben:
-Arduino-kompatibel (läuft auf Mikrocontroller)
-Implementiert mindestens eine Kernfunktion (FK, IK, Trajektorie, Profil, Kalibrierung)
-Ausreichend dokumentiert (README vorhanden, nachvollziehbar)
- ... 
-"Eine vollständige Übersicht aller gefundenen Quellen inkl. Ausschlussgründen findet sich in Anhang X."
+Die Recherche hat sieben Ergebnisse geliefert, welche direkt mit dem Braccio Roboterarm arbeiten sowie 82 Ergebnisse auf der Arduino Plattform. Von den sieben Braccio-spezifischen Implementierungen wurden sechs und von den 82 Arduino-basierten Ergebnissen fünf in die Analyse aufgenommen. Eine vollständige Übersicht aller gefundenen Quellen einschließlich der Ausschlussgründe finden sich in Anhang A.
 
-
-
-
-Wie wurden die Bewertungskategorien der Tabelle festgelegt?
-
-Die Bewertungskategorien der Vergleichstabelle leiten sich aus den im Rahmen der Projektabstimmung definierten Systemanforderungen ab [Anforderungen aufführen]. Anhand dieser Kriterien wurden bestehende Lösungen analysiert.
-
-Was bedeuten die Kathegorien?
+Bestehende Lösungen wurden anhand von Bewertungskriterien analysiert, die sich aus dem im Rahmen der Projektabstimmung mit dem Betreuer definierten Funktionsumfang der zu entwickelnden Library ableiten. Der Funktionsumfang beinhaltet Vorwärtskinematik, inverse Kinematik, Trajektorienplanung, Geschwindigkeitsprofil, Offset-Kalibrierung, Modulare Architektur sowie Braccio-Kompabilität. Die daraus abgeleiteten Bewertungskriterien beschreibt Tabelle~\ref{tab:bewertungskriterien} im Detail. 
 
 \begin{table}[h]
 \centering
-\caption{Vergleichskriterien der analysierten Bibliotheken}
-\label{tab:vergleichskriterien}
+\caption{Bewertungskriterien der Vergleichstabelle}
+\label{tab:bewertungskriterien}
 \begin{tabularx}{\textwidth}{>{\bfseries}l X}
 \toprule
-Spalte & Beschreibung \\
+Kriterium & Beschreibung \\
 \midrule
-FK 
-  & Berechnet aus Gelenkwinkeln die TCP-Position im Raum \\
+Vorwärtskinematik 
+  & Berechnet aus den Gelenkwinkeln die TCP-Position im Raum. Bewertet wird ob eine entsprechende Implementierung vorhanden ist. \\
 \addlinespace
-IK 
-  & Berechnet aus Zielkoordinaten die erforderlichen Gelenkwinkel -- 
-    inkl.\ verwendete Methode (geometrisch / analytisch / DH-basiert) \\
+Inverse Kinematik 
+  & Berechnet aus den Zielkoordinaten die erforderlichen Gelenkwinkel. Bewertet wird das Vorhandensein einer IK-Lösung sowie der verwendete Ansatz (geometrisch, analytisch oder DH-basiert) \\
 \addlinespace
-Trajektorie 
-  & Interpoliert Zwischenpunkte zwischen Start- und Zielkonfiguration \\
+Trajektorienplanung 
+  & Bewertet wird ob eine kartesische Linearinterpolation des Endeffektors zwischen zwei Zielpositionen vorhanden ist. \\
 \addlinespace
 Geschwindigkeitsprofil 
-  & Regelt Beschleunigung und Verzögerung für sanfte Bewegungsabläufe \\
+  & Bewertet wird das Vorhandensein sein eines Geschwindigkeitsprofils, welches die Beschleunigung und Verzögerung des Endeffektors zwischen zwei kartesischen Zielpositionen für sanfte Bewegungsabläufe regelt. \\
+\addlinespace
+Offset-Kalibrierung 
+  & Bewertet wird ob gelenkspezifische Abweichungen zwischen vorgegebenen und tatsächlich angefahrenen Gelenkwinkeln kompensiert werden können. \\
 \addlinespace
 Modulare Architektur 
-  & Wiederverwendbarkeit und Erweiterbarkeit der Software \\
+  & Bewertet den Grad der Trennung zwischen Anwendungslogik (.ino) und wiederverwendbaren Komponenten (.cpp/.h-Dateien) mit klar abgegrenzten Zuständigkeiten. \\
 \addlinespace
 Braccio-Kompatibilität 
-  & Braccio-spezifisch (Explizit für den Braccio entwickelt) / Arduino-kompatibel (Läuft direkt auf Arduino oder ist portierbar) / Nicht kompatibel (Andere Plattform, nicht sinnvoll portierbar)
+  & Grad der direkten Einsetzbarkeit für den TinkerKit Braccio. 
+  Braccio-spezifisch: Explizit für den Braccio entwickelt, keine Anpassung erforderlich.
+  Arduino-spezifisch: Für Arduino entwickelt, jedoch auf abweichende Hardware ausgelegt und daher nur mit Modifikationen übertragbar.
      \\
-\addlinespace
-Kalibrierung 
-  & Kompensation mechanischer Ungenauigkeiten der Servos \\
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
 
 
+Die Analyse umfasst elf Lösungen, die in Tabelle Tabelle~\ref{tab:vergleichstabelle} gegenübergestellt werden. Diese weisen einen heterogenen Funktionsumfang auf und konzentrieren sich überwiegend auf spezifische Teilprobleme. Von den elf betrachteten Lösungen implementieren sieben eine inverse Kinematik, sechs eine Trajektorienplanung, vier ein Geschwindigkeitsprofil und drei eine Offset-Kalibrierung. Die Vorwärtskinematik wurde lediglich in zwei Implementierungen umgesetzt. Keine der untersuchten Lösungen deckt den angestrebten Funktionsumfang vollständig ab.
+
+% ============================================================
+%  Vergleichstabelle — Bestehende Lösungen und Systeme
+%  Benötigte Pakete: pdflscape, colortbl, xcolor, array, booktabs
+% ============================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Vergleich bestehender Open-Source-Lösungen}
+\label{tab:vergleich}
+\resizebox{\textwidth}{!}{%
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|p{2.4cm}|p{2.4cm}|p{3.2cm}|p{2.8cm}|p{3.2cm}|p{2.2cm}|p{2.2cm}|p{2.6cm}|}
+\hline
+%
+% Header-Zeile
+%
+\cellcolor{black} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Vorwärtskinematik} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Inverse Kinematik} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Trajektorienplanung} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Geschwindigkeitsprofil} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Offset-Kalibrierung} &
+\cellcolor{cellgray}\color{textgray}\centering\textbf{Modulare Architektur} &
+\cellcolor{cellgray}\color{textgray}\centering\arraybackslash\textbf{Braccio-Kompatibilität} \\
+\hline
+%
+% cgxeiji / CGx-InverseK
+%
+\cellcolor{cellgray}\color{textgray}\textbf{cgxeiji / CGx-InverseK} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}solider geometrischer Ansatz ohne DH-Parameter &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen} \\
+\hline
+%
+% cgxeiji / CGx-Gcode-RobotArm
+%
+\cellcolor{cellgray}\color{textgray}\textbf{cgxeiji / CGx-Gcode-RobotArm} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen}\color{textgreen}kartesische Linearinterpolation &
+\cellcolor{cellred}\color{textred}konstante Geschwindigkeit, einstellbar &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}Braccio-spezifisch, aber anderes Shield \\
+\hline
+%
+% ChristopheBraud
+%
+\cellcolor{cellgray}\color{textgray}\textbf{ChristopheBraud} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}Gelenkraum-Interpolation &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}hardcodiert in der .ino &
+\cellcolor{cellgreen} &
+\cellcolor{cellgreen} \\
+\hline
+%
+% DrehanM
+%
+\cellcolor{cellgray}\color{textgray}\textbf{DrehanM} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}rudimentärer geometrischer Ansatz ohne DH-Parameter &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen} \\
+\hline
+%
+% edisons3608
+%
+\cellcolor{cellgray}\color{textgray}\textbf{edisons3608} &
+\cellcolor{cellgreen} &
+\cellcolor{cellyellow}\color{textyellow}ausgereifte geometrischer Ansatz ohne DH-Parameter &
+\cellcolor{cellyellow}\color{textyellow}Gelenkraum-Interpolation &
+\cellcolor{cellgreen}\color{textgreen}glockenförmig zeitgesteuert &
+\cellcolor{cellred} &
+\cellcolor{cellgreen} &
+\cellcolor{cellyellow}\color{textyellow}Arduino-spezifisch \\
+\hline
+%
+% elevenMiles
+%
+\cellcolor{cellgray}\color{textgray}\textbf{elevenMiles} &
+\cellcolor{cellgreen} &
+\cellcolor{cellyellow}\color{textyellow}solider geometrischer Ansatz ohne DH-Parameter &
+\cellcolor{cellred} &
+\cellcolor{cellred}\color{textred}konstante Geschwindigkeit / explizit in Grad einstellbar &
+\cellcolor{cellgreen}\color{textgreen}interaktiv ermittelbar, Speicherung per Terminal &
+\cellcolor{cellgreen} &
+\cellcolor{cellyellow}\color{textyellow}Arduino-spezifisch (aber 3-DOF System) \\
+\hline
+%
+% ToblerRobot
+%
+\cellcolor{cellgray}\color{textgray}\textbf{ToblerRobot} &
+\cellcolor{cellred} &
+\cellcolor{cellred}\color{textred}vereinfacht, setzt gleiche Linklängen voraus &
+\cellcolor{cellgreen}\color{textgreen}kartesische Linearinterpolation mit Kosinus-Profil &
+\cellcolor{cellgreen}\color{textgreen}Kosinus-Profil, glockenförmig, geschwindigkeitsgesteuert &
+\cellcolor{cellred} &
+\cellcolor{cellgreen} &
+\cellcolor{cellred}\color{textred}Arduino-spezifisch, aber Stepper-Motoren statt Servos \\
+\hline
+%
+% BraccioV2
+%
+\cellcolor{cellgray}\color{textgray}\textbf{BraccioV2} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen}\color{textgreen}interaktiv ermittelbar, hardcodiert in der .ino &
+\cellcolor{cellred} &
+\cellcolor{cellgreen} \\
+\hline
+%
+% Markku-github
+%
+\cellcolor{cellgray}\color{textgray}\textbf{Markku-github} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen}\color{textgreen}ausgereifte geometrischer Ansatz ohne DH-Parameter, volle Kontrolle über Orientierung &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow} &
+\cellcolor{cellyellow}\color{textyellow}Arduino-spezifisch \\
+\hline
+%
+% ShadmanTajwar
+%
+\cellcolor{cellgray}\color{textgray}\textbf{ShadmanTajwar} &
+\cellcolor{cellred} &
+\cellcolor{cellgreen}\color{textgreen}ausgereifte geometrischer Ansatz mit DH-Parametern &
+\cellcolor{cellyellow}\color{textyellow}Gelenkraum-Interpolation mit Way-Point Übergängen (mittels LSPB) &
+\cellcolor{cellgreen}\color{textgreen}Trapezprofil &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}Arduino-spezifisch \\
+\hline
+%
+% stefangs
+%
+\cellcolor{cellgray}\color{textgray}\textbf{stefangs} &
+\cellcolor{cellred} &
+\cellcolor{cellred} &
+\cellcolor{cellyellow}\color{textyellow}Gelenkraum-Interpolation &
+\cellcolor{cellgreen}\color{textgreen}Trapezprofil, Geschwindigkeit während der Runtime einstellbar &
+\cellcolor{cellred} &
+\cellcolor{cellyellow} &
+\cellcolor{cellgreen} \\
+\hline
+\end{tabular}%
+}
+\end{table}
 
 
 
 
-Tabelle
+Sechs der Untersuchten Lösungen sind Braccio-spezifisch und können, mit Ausnahme von CGx-Gcode-RobotArm direkt eingesetzt werden. Bei diesem wird nicht das dem Roboterset beigelegte Braccio-Shield verwendet und bedarf daher zusätzliche Anpassung. Vier weitere Lösungen sind Arduino-spezifisch ausgelegt und erfordern entsprechende Anpassungen für den Betrieb mit dem TinkerKit Braccio. Das System von ToblerArm stellt aufgrund seiner Auslegung auf Schrittmotoren einen Sonderfall.
 
+Unter den analysierten Lösungen sticht das System von edison3608 hervor, da dieses als einzige Implementierung Vorwärtskinematik, inverse Kinematik, Trajektorienplanung sowie ein Geschwindigkeitsprofil in einer modular aufgebauten Bibliothek vereint. Da es sich um eine Hobby-Implementierung handelt, sollten für das Architekturdesign der Library zusätzlich wissenschaftliche Quellen herangezogen werden. Es zeigt sich zudem, dass einzelne Funktionen in spezialisierten Implementierungen qualitativ hochwertiger umgesetzt wurden. 
 
+So bietet Markku-github als einziges ohne DH-parameter volle Kontrolle über Position und Orientierung des TCPs. ShadmanTajwar erreicht dies ebenfalls als einzige Implementierung mit DH-Parametern. Hinzu kommt eine Trajektorienplanung die weiche Übergänge zwischen Wegpunkten ohne vollständigen Stopp ermöglicht, indem sich die einzelnen Trapez-Profile für die Geschwindigkeit zwischen den Wegpunkten überlappen, und die einzige Referenz für dieses Konzept darstellt. Aus diesem Grund liefert die Implementierung ein Argument für das Trapezprofil gegenüber glockenförmigen Alternativen, auch wenn sie auf Gelenkraum-Interpolation basiert und damit nicht den angestrebten kartesischen Ansatz erfüllt.
 
-Ersteindruck Anhand der Projektbeschreibungen:
+ToblerArm realisiert die kartesischer Linearinterpolation mit einem Kosinus-Ge\-schwin\-dig\-keits\-pro\-fil und bietet damit die stärkste Kombination aus liniarer Bewegung des TCPs und sanftem Bewegungsablauf unter allen analysierten Lösungen. Des weiteren realisiert ToblerArm als einziges eine klar geschichtete Vier-Schichten-Architektur, die eine saubere Trennung zwischen Kinematik, Bewegungsplanung, Hardware-Ansteuerung und Kommunikationsprotokoll umsetzt. Aufgrund der Auslegung auf Schrittmotoren ist die direkte Übertragbarkeit auf den Servo-basierten Braccio Roboterarm jedoch stark eingeschränkt. 
 
-Auf GitHub existieren dutzende IK-Implementierungen für Arduino-Roboterarme (cgxeiji, DrehanM, Markku, ShadmanTajwar, edisons3608, ToblerArm u.a.). Diese sind überwiegend projektspezifische Einzellösungen mit 2-4 DOF. Vereinzelt werden FK, IK und Trajektorie kombiniert (edisons3608, ToblerArm), jedoch ohne dokumentierte Library-Architektur und ohne Geschwindigkeitsprofil. Keine der gefundenen Lösungen präsentiert sich als modulare, wiederverwendbare Bibliothek. \cite{cgxeiji.5172026}
-
-Etablierte Robotik-Frameworks wie ROS/MoveIt, OROCOS, KDL und pinocchio bieten umfassende Lösungen für Kinematik, Dynamik und Trajektorienplanung, setzen jedoch PC-basierte Hardware und Linux voraus. Für ressourcenbeschränkte Mikrocontroller wie den Arduino Zero sind diese nicht einsetzbar.
+Hinsichtlich der Offset-Kalibrierung ermöglicht BraccioV2 ein Ermittlunsgverfahren für die Gelenk-Offsets, dessen Ergebnisse manuell in die .ino Datei eingetragen werden. Bei elevenMiles werden die Gelenk-Offsets automatisch im EEPROM gespeichert. Jedoch ist das System auf einem 3-DOF-System ausgelegt und erfordert daher entsprechende Anpassungen.
 
 
 \subsection{Forschungslücke und Systemanforderungen}
+
+Die Recherche zeigt, dass lediglich eine der untersuchten Lösungen DH-Parameter einsetzt — die übrigen Implementierungen lösen die inverse Kinematik geometrisch oder analytisch und erzielen dabei vergleichbare Ergebnisse. Eine DH-basierte IK stellt damit keine zwingenden Voraussetzung für den angestrebten Funktionsumfang dar.
+
+
 
 \subsection{Bibliothekskonzept}
 
@@ -247,10 +427,10 @@ Was der Code tatsächlich macht:
 Löst IK in der vertikalen 2D-Ebene (R-Z-Ebene) via Kosinussatz
 Basiswinkel separat über atan2(y,x)
 Zwei Lösungen geprüft (Elbow-up / Elbow-down) — nimmt erste gültige
-Anflugwinkel phi: entweder fix vorgegeben oder automatisches Scannen in DEGREE_STEP-Schritten
+Anflugwinkel phi: entweder fix vorgegeben oder automatisches Scannen in DEGREE STEP-Schritten
 
 Warum der Arbeitsraum eingeschränkt ist — konkret:
-cppfor (float phi = -DOUBLE_PI; phi < DOUBLE_PI; phi += DEGREE_STEP)
+cppfor (float phi = -DOUBLE PI; phi < DOUBLE PI; phi += DEGREE STEP)
 Das phi-Scanning ist ein Brute-Force-Ansatz — er iteriert durch mögliche Anflugwinkel in festen Schritten. Lösungen die zwischen zwei Schritten liegen werden schlicht verpasst. Kein systematischer Ansatz, keine Optimierung.
 Kein DH-Formalismus: Gelenkwinkel direkt aus Linklängen und Kosinussatz — funktioniert für 3-Link-Arm, aber nicht systematisch erweiterbar auf mehr DOF.
 
@@ -299,9 +479,22 @@ Welche Schwierigkeiten traten auf?
 
 Workaround schaffen um library und .ino datei trennen zu können. Welche Lösungsansätze gibt es für dieses Problem? 
 
-\subsection{Verbesserungspotenzial}
+\subsection{Verbesserungspotenzial und Ausblick}
 
 Was könnte zukünftig besser gemacht werden?
+
+Für die theoretischen Grundlagen der Methoden: Ja, da wäre ein breiterer Blick sinnvoll gewesen. Zum Beispiel:
+
+Wie implementieren andere Embedded-Systeme (STM32, ESP32) IK?
+Gibt es etablierte Ansätze für Trapezprofile auf Mikrocontrollern?
+Wie lösen CNC-Firmware-Projekte (Marlin, GRBL) Trajektorienplanung?
+
+Die Recherche fokussierte sich auf Arduino-spezifische Implementierungen. Für die Methodenrecherche in PPP2 sollte der Suchraum auf andere Embedded-Plattformen (STM32, ESP32) sowie etablierte Open-Source-Firmware-Projekte wie Marlin oder GRBL erweitert werden, um bewährte Implementierungsansätze für IK, Trajektorienplanung und Geschwindigkeitsprofile zu identifizieren.
+
+Ursprünglich war DH-basierte IK geplant — die Recherche hat gezeigt dass geometrische Ansätze für den Braccio ebenso geeignet sind.
+
+trapezprofil doer gibts auch glockenkurfen mit weicher Zeicnung?
+
 
 
 % ==================================================
@@ -315,4 +508,3 @@ Was könnte zukünftig besser gemacht werden?
 \addcontentsline{toc}{section}{Anhang}
 
 \end{document}
-
