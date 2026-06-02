@@ -151,47 +151,26 @@ Vor Beginn der systematischen Literaturrecherche wurde in Abstimmung mit dem Bet
 
 \subsection{Wissenschaftliche Vorgehensweise} 
 
-Ich beschreibe, wie ich das Konzept PRISMA-light umgesetzt habe. Ich habe mir dafür Hilfetools in Excel gebaut. Ich führe also genau auf wie ich vorgegangen bin und verweise am Ende auf die von mir erstellten Tabellen im Anhang.
+Zu Beginn des Projekts wurde der Projektumfang in Abstimmung mit dem Betreuer definiert. Dabei wurde ein erster Funktionsumfang für die zu entwickelnde Library festgelegt sowie erste systembezogene Teilprobleme identifiziert.
 
-Vorgehensweise für die Sichtung vorhandener Systeme:
-\begin{itemize}
-    \item README — Was behauptet der Autor selbst?
-    \item Haupt-Header-File (.h) — Was sind die public-Methoden? Das sagt dir den Funktionsumfang ohne Code zu lesen
-    \item 1-2 kritische Funktionen — z.B. die Move-Funktion, IK-Funktion
-    \item Beispiel-Sketches — Wie wird's benutzt? Das reicht für deine Tabelle
-    \item 
-\end{itemize}
+Die wissenschaftliche Vorgehensweise im Rahmen dieses Projekts basiert primär auf einer systematischen Literaturrecherche. Das zugrundeliegende Recherchekonzept orientiert sich am PRISMA-Standard und umfasst eine strukturierte Keyword-Matrix, eine datenbankbasierte Suche sowie eine lückenlose Dokumentation aller Suchschritte. 
 
-\begin{itemize}
-    \item PRISMA-light
-    \item SearchLog
-    \item ScreeningLog
-\end{itemize}
+Die Suche wurde in den wissenschaftlichen Datenbanken IEEE Xplore, ACM Digital Library sowie Google Scholar durchgeführt. Ergänzend erfolgte eine gezielte Suche nach bestehenden Open-Source-Implementierungen auf GitHub und über Google als Grey-Literture. 
+
+Jede Suchanfrage wurde in einem Suchprotokoll dokumentiert, welche neben dem Datum, Datenbank und Suchstring auch einen eindeutigen Search-Tag zugeordnet bekommt. Dieser ermöglicht es, jede gefundene Quelle im nachgelagerten Bewertungsprotokoll lückenlos auf den zugehörigen Suchstring und die zugehörige Datenbank zurückzuverfolgen. Im Bewertungsprotokoll wurde jede potenziell relevante Quelle hinsichtlich Titel, Abstract oder Volltext bewertet und mit einer begründeten Include- oder Exclude-Entscheidung versehen. Inkludierte Quellen wurden anschließend in Citavi übernommen und den entsprechenden Kapiteln zugeordnet. Eine vollständige Übersicht der Recherche-Dokumentation findet sich in Anhang A. 
+
+Ergänzend zur Literaturrecherche wurde ein erster Prototyp entwickelt, in dem eine bestehende IK-Implementierung in einen Bibliotheksentwurf integriert wurde. Dieser explorative Ansatz diente der praktischen Auseinandersetzung mit dem Adaptionsaufwand bestehender Lösungen und liefert eine Grundlage für die Planung der Weiterführung des Projektes. Der Prototyp wird in Abschnitt~\ref{sec:prototyp} näher beschrieben.
 
 
 \subsection{Eingesetzte Hard- und Software}
+\subsubsection*{Hardware}
+Als Zielhardware dient der Arduino TinkerKit Braccio Roboterarm, für den die Library entwickelt wird. Dieser Ermöglicht zugleich die praktische Erprobung der implementierten Funktionen. Als Mikrocontroller wird der Arduino Zero eingesetzt, der gegenüber dem Arduino-Uno über erweiterte Rechenkapazität verfügt. Ein zusätzliches Shield ist nicht erforderlich, weshalb der Betreib mit dem im Lieferumfang des Braccio-Bausatzes enthaltenen Shield erfolgen kann.
 
-Hardware:
-\begin{itemize}
-    \item Arduino TinkerKit Braccio Roboterarm
-    \item Arduino Zero (SAMD21)
-\end{itemize}
+\subsubsection*{Software und Entwicklung}
+Die Entwicklung der Library erfolgt in Visual Studio Code. Die Arduino-IDE wird zur Einbindung der Arduino-spezifischen Libraries, zum compilieren sowie zum Testen auf der Zielhardware verwendet. Als Basis dient die offizielle Braccio-Library-for-Arduino, auf der die eigene Library aufbaut. Die Implementierung erfolgt in C++, der Standardsprache der Arduino-Plattform. Git wird zur Versionskontrolle der Library sowie der Projektdokumentation eingesetzt.
 
-Software/Entwicklung:
-\begin{itemize}
-    \item Arduino IDE
-    \item Braccio Library for Arduino (Basis-Library)
-    \item C++
-    \item Git (Versionskontrolle der Library und Dokumentation)
-\end{itemize}
-
-Wissenschaftliches Arbeiten:
-\begin{itemize}
-    \item Citavi (Literaturverwaltung)
-    \item Excel (Recherche-Dokumentation: SearchLog, ScreeningLog)
-    \item Overleaf/LaTeX (Dokumentation)
-\end{itemize}
-
+\subsubsection*{Wissenschaftliches Arbeiten}
+Citavi dient als Literaturverwaltungsprogramm. Die Recherche-Dokumentation sowie der Vergleich bestehender Lösungen und Systeme werden in Excel geführt. Als Dokumentationsgrundlage wird Latex verwendet.
 
 \section{Ergebnisse und Artefakte}
 
@@ -282,6 +261,7 @@ Die analysierten Implementierungen verfolgen den Ansatz, Kernfunktionen professi
 \subsection{Bibliothekskonzept}
 
 \subsection{Entwicklung eines ersten Prototypen}
+\label{sec:prototyp}
 
 Technische Kernpunkte
 Was der Code tatsächlich macht:
