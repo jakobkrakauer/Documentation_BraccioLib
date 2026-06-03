@@ -135,13 +135,12 @@
 
 
 \section{Eigene Rolle im Projekt}
-Eigene Rolle – hier sollte beschrieben werden, was die Hauptaufgaben waren – die könnt ihr auch für eure Projekte beschreiben.
 
+Das Projekt wurde als Einzelprojekt durchgeführt. Die eigene Rolle umfasste alle Projektphasen von der Recherche über die Konzeption bis zur prototypischen Implementierung. 
 
-Vor Beginn der systematischen Literaturrecherche wurde in Abstimmung mit dem Betreuer ein erster Funktionsumfang für die zu entwickelnde Library definiert. Dieser umfasste inverse Kinematik mittels DH-Parametern, ein trapezförmiges Geschwindigkeitsprofil sowie eine Offset-Kalibrierung. Letztere ergab sich aus praktischen Erfahrungen während der Explorationsphase zum Systemaufbau und zur Funktionsweise des Braccio-Roboters, in der festgestellt wurde, dass Sollwinkel nicht zuverlässig erreicht wurden.
+Zu Beginn galt es, Aufbau und Funktionsweise des Braccio Roboterarms zu verstehen sowie erste systembezogene Teilprobleme zu identifizieren. Parallel dazu wurde der Projektumfang kontinuierlich mit dem Betreuer abgestimmt. In diesem Rahmen wurde ein erster Funktionsumfang für die zu entwickelnde Library definiert, der Vorwärtskinematik, inverse Kinematik, Trajektorienplanung, ein Geschwindigkeitsprofil sowie eine Offset-Kalibrierung umfasst. Letztere ergab sich aus praktischen Erfahrungen während der Einarbeitungsphase, in der festgestellt wurde, dass Sollwinkel vom Roboter nicht zuverlässig erreicht wurden.
 
-
-
+Darüber hinaus wurde ein erster Bibliotheksentwurf erstellt und das Zusammenspiel der einzelnen Komponenten konzeptionell erarbeitet.
 
 
 \section{Theoretische Grundlagen der inversen Kinematik}
@@ -175,6 +174,7 @@ Citavi dient als Literaturverwaltungsprogramm. Die Recherche-Dokumentation sowie
 \section{Ergebnisse und Artefakte}
 
 \subsection{Bestehende Lösungen und Systeme}
+\label{sec:Systeme}
 
 Im Rahmen der systematischen Literaturrecherche wurde untersucht, ob vergleichbare Open-Source-Lösungen, wie Motion-Control-Libraries oder Frameworks, bereits existieren. In die vergleichende Analyse wurden Lösungen einbezogen, die folgende Kriterien erfüllen: Es handelt sich um eine Arduino-kompatible Open-Source-Implementierung, beinhaltet mindestens eine Kernfunktion und ist ausreichend dokumentiert. Die Auswahl wurde dabei qualitativ bewertet. Lösungen, deren Ansatz trotz Erfüllung der Kriterien keinen Mehrwert boten, wurden ausgeschlossen. Zugleich wurden Implementierungen mit relevantem Funktionsumfang auch dann mit aufgenommen, wenn sie einzelne Kriterien nicht erfüllt hatten. 
 
@@ -194,7 +194,7 @@ Vorwärtskinematik
   & Berechnet aus den Gelenkwinkeln die TCP-Position im Raum. Bewertet wird ob eine entsprechende Implementierung vorhanden ist. \\
 \addlinespace
 Inverse Kinematik 
-  & Berechnet aus den Zielkoordinaten die erforderlichen Gelenkwinkel. Bewertet wird das Vorhandensein einer IK-Lösung sowie der verwendete Ansatz (geometrisch, analytisch oder DH-basiert) \\
+  & Berechnet aus den Zielkoordinaten die erforderlichen Gelenkwinkel. Bewertet wird das Vorhandensein einer IK-Lösung sowie der verwendete Ansatz (analystisch, geometrisch, numerisch)  \\
 \addlinespace
 Trajektorienplanung 
   & Bewertet wird ob eine kartesische Linearinterpolation des Endeffektors zwischen zwei Zielpositionen vorhanden ist. \\
@@ -241,9 +241,9 @@ Unter den analysierten Lösungen sticht das System von edison3608~\cite{edisons3
 
 So bietet Markku-github~\cite{Markkugithub.2025} als einziges ohne DH-parameter volle Kontrolle über Position und Orientierung des TCPs. ShadmanTajwar~\cite{ShadmanTajwar.2023} erreicht dies ebenfalls als einzige Implementierung mit DH-Parametern. Hinzu kommt eine Trajektorienplanung die weiche Übergänge zwischen mehreren vorgegebenen Positionen ermöglicht, indem sich die einzelnen Trapez-Profile für die Geschwindigkeit zwischen den Wegpunkten überlappen, und die einzige Referenz für dieses Konzept darstellt. Aus diesem Grund liefert die Implementierung ein Argument für das Trapezprofil gegenüber glockenförmigen Alternativen, auch wenn sie auf Gelenkraum-Interpolation basiert und damit nicht den angestrebten kartesischen Ansatz erfüllt.
 
-ToblerRobot~\cite{KANCHANAKALANAPERERA.5172026} realisiert die kartesischer Linearinterpolation mit einem Kosinus-Ge\-schwin\-dig\-keits\-pro\-fil und bietet damit die stärkste Kombination aus liniarer Bewegung des TCPs und sanftem Bewegungsablauf unter allen analysierten Lösungen. Des weiteren realisiert ToblerRobot als einziges eine klar geschichtete Vier-Schichten-Architektur, die eine saubere Trennung zwischen Kinematik, Bewegungsplanung, Hardware-Ansteuerung und Kommunikationsprotokoll umsetzt. Aufgrund der Auslegung auf Schrittmotoren ist die direkte Übertragbarkeit auf den Servo-basierten Braccio Roboterarm jedoch stark eingeschränkt. 
+ToblerRobot~\cite{KANCHANAKALANAPERERA.5172026} realisiert die kartesischer Linearinterpolation mit einem Kosinus-Ge\-schwin\-dig\-keits\-pro\-fil und bietet damit die stärkste Kombination aus linearer Bewegung des TCPs und sanftem Bewegungsablauf unter allen analysierten Lösungen. Des weiteren realisiert ToblerRobot als einziges eine klar geschichtete Vier-Schichten-Architektur, die eine saubere Trennung zwischen Kinematik, Bewegungsplanung, Hardware-Ansteuerung und Kommunikationsprotokoll umsetzt. Aufgrund der Auslegung auf Schrittmotoren ist die direkte Übertragbarkeit auf den Servo-basierten Braccio Roboterarm jedoch stark eingeschränkt. 
 
-Hinsichtlich der Offset-Kalibrierung ermöglicht BraccioV2~\cite{LukasSeveringhaus.2020} ein Ermittlunsgverfahren für die Gelenk-Offsets, dessen Ergebnisse manuell in die .ino Datei eingetragen werden. Bei elevenMiles~\cite{elevenMiles.5172026} werden die Gelenk-Offsets automatisch im EEPROM gespeichert. Jedoch ist das System auf einem 3-DOF-System ausgelegt und erfordert daher entsprechende Anpassungen.
+Hinsichtlich der Offset-Kalibrierung bietet BraccioV2~\cite{LukasSeveringhaus.2020} ein Ermittlunsgverfahren für die Gelenk-Offsets, dessen Ergebnisse manuell in die .ino Datei eingetragen werden. Bei elevenMiles~\cite{elevenMiles.5172026} werden die Gelenk-Offsets automatisch im EEPROM gespeichert. Jedoch ist das System auf einem 3-DOF-System ausgelegt und erfordert daher entsprechende Anpassungen.
 
 
 \subsection{Forschungslücke und Systemanforderungen}
@@ -254,89 +254,72 @@ Gleichzeitig bestätigt die Analyse die Richtigkeit des zuvor festgelegten Funkt
 
 Für eine umfassende Open-Source-Library kann demzufolge der zuvor definierte Umfang der Funktionen, welche in Tabelle~\ref{tab:bewertungskriterien} aufgeführt sind, in die Systemanforderungen überführt werden. Darüber hinaus hat die Analyse Designentscheidungen aufgezeigt, die zuvor nicht im Fokus standen. Ob die inverse Kinematik mittels DH-Parameter oder mit einem rein geometrischen Ansatz umgesetzt wird, bleibt zum jetzigen Zeitpunkt offen. Gleiches gilt für die Wahl des Geschwindigkeitsprofils zwischen Trapez- und Kosinus-Ansatz, wobei sich in den analysierten Lösungen zudem zwei Ansätze zur Vorgabe der Bewegungsgeschwindigkeit herausgestellt haben: Die direkte Angabe des TCP-Geschwindigkeit oder die Vorgabe der gewünschten Bewegungsdauer zwischen Start-und Zielpunkt. 
 
-Die Analyse hat darüber hinaus Funktionen aufgezeigt, die über den definierten Funktionsumfang hinausgehen und für eine professionelle Weiterentwicklung der Library von Interesse sien könnten. So ermöglicht ShadmanTajwar~\cite{ShadmanTajwar.2023} als einzige untersuchte Implementierung weiche Übergänge zwischen mehreren vorgegebenen Positionen. Zudem setzen CGx-Gcode-RobotArm~\cite{cgxeiji.2018} sowie ToblerRobot~\cite{KANCHANAKALANAPERERA.5172026} ein G-Code-Interface zur Steuerung des Roboters ein, das als Kommunikationsstandard im semi-professionellen Bereich etabliert schient und einen interessanten Ansatz für eine erweiterte Benutzerschnittstelle darstellt. 
+Die Analyse hat darüber hinaus Funktionen aufgezeigt, die über den definierten Funktionsumfang hinausgehen und für eine professionelle Weiterentwicklung der Library von Interesse sein könnten. So ermöglicht ShadmanTajwar~\cite{ShadmanTajwar.2023} als einzige untersuchte Implementierung weiche Übergänge zwischen mehreren vorgegebenen Positionen. Zudem setzen CGx-Gcode-RobotArm~\cite{cgxeiji.2018} sowie ToblerRobot~\cite{KANCHANAKALANAPERERA.5172026} ein G-Code-Interface zur Steuerung des Roboters ein, das als Kommunikationsstandard im semi-professionellen Bereich etabliert schient und einen interessanten Ansatz für eine erweiterte Benutzerschnittstelle darstellt. 
 
 Die analysierten Implementierungen verfolgen den Ansatz, Kernfunktionen professioneller Robotersysteme vereinfacht auf Arduino-kompatiblen Plattformen umzusetzen. Das vorliegende Projekt greift diesen Ansatz auf und führt ihn weiter. Die Forschungslücke liegt in einer modularen, Braccio-kompatiblen Library, die die in den untersuchten Implementierungen vereinzelt realisierten Funktionen zu einem vollständigen System vereint. Eine solche Lösung existiert nicht und wird deshalb von diesem Projekt adressiert.
 
 \subsection{Bibliothekskonzept}
+\label{sec:bibliothekskonzept}
+
+Im Rahmen dieses Projekts wurden auf Basis einer ersten Literaturrecherche grundlegende Architekturprinzipien identifiziert, die als Designgrundlage für die Bibliotheksentwicklung dienen. 
+
+Die vergleichende Analyse bestehender Implementierungen (vgl. Abschnitt~\ref{sec:Systeme}) hat gezeigt, dass Bibliotheksansätze für Robotersteuerung entweder funktional oder nach einem Schichtmodell strukturiert sein können. Das Schichtmodell nach Garcia et al.~\cite{J.GaimezGarciaJ.GomezOrtegaL.NietoNietoandA.SanchezGarcia.5172026} findet sich in vereinfachter Form in ToblerRobot~\cite{KANCHANAKALANAPERERA.5172026} wieder, was die praktische Relevanz dieses Architekturprinzips auch im Open-Source-Bereich bestätigt. 
+
+Aus der Literatur lassen sich drei Designprinzipien ableiten, die für die Architektur der zu entwickelnden Library als relevant eingestuft wurden. Erstens beschreiben Loffler et al.~\cite{MarkusS.LofflerDarrenM.DawsonErkanZergerogluandNicolaeP.Costescu.2001} OOP-basierte Prinzipien, die eine Erweiterung der Library um neue Module ermöglichen, ohne bestehenden Code zu ändern, sowie eine Hardware-Portierbarkeit durch saubere Trennung von Algorithmus- und Hardware-Schicht. Zweitens zeigen Hopler \& Otter~\cite{RobertHopler.5172026}, dass kinematische Funktionen als unabhängig aufrufbare Komponenten mit klar abgegrenzter Verantwortung umzusetzen sind, wobei auf ressourcenbeschränkter Hardware der
+sparsame Einsatz virtueller Funktionen zu beachten ist. Drittens zeigen Kuti \& Galambos~\cite{JozsefKuti.5172026}, dass die Steuerungslogik über einen virtuellen Hardware Layer statt direkt an konkrete Hardware gekoppelt sein sollte, sodass neue Hardware-Implementierungen die Steuerungslogik unberührt lassen.
+
+Eine Übersicht der identifizierten Quellen sowie ihrer jeweiligen Relevanz für das Bibliotheksdesign findet sich in Tabelle~\ref{tab:architektur-quellen}.
+
+\begin{table}[h]
+\centering
+\caption{Identifizierte Quellen für das Bibliothekskonzept}
+\label{tab:architektur-quellen}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Quelle} & \textbf{Relevanz für das Bibliotheksdesign} \\
+\midrule
+Loffler et al.~\cite{MarkusS.LofflerDarrenM.DawsonErkanZergerogluandNicolaeP.Costescu.2001}
+  & OOP-Design, Modularität und Hardware-Portierbarkeit als Architekturprinzipien \\
+\addlinespace
+Hopler \& Otter~\cite{RobertHopler.5172026}
+  & Kinematische Funktionen als unabhängige Komponenten. Sparsamer Einsatz virtueller Funktionen \\
+\addlinespace
+Garcia et al.~\cite{J.GaimezGarciaJ.GomezOrtegaL.NietoNietoandA.SanchezGarcia.5172026}
+  & Layered Architecture mit vier Schichten. Trennung von Pfadplanung, Regelung und Hardware \\
+\addlinespace
+Kuti \& Galambos~\cite{JozsefKuti.5172026}
+  & Virtuelle Hardware Layer entkoppeln Steuerungslogik von konkreter Hardware \\
+\addlinespace
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Entwicklung eines ersten Prototypen}
 \label{sec:prototyp}
 
-Technische Kernpunkte
-Was der Code tatsächlich macht:
+Auf Basis der vergleichenden Analyse in Tabelle~\ref{tab:vergleichstabelle} wurde eine bestehende Implementierung zur inversen Kinematik ausgewählt und in einen ersten Bibliotheksentwurf integriert. Ziel war die praktische Auseinandersetzung mit dem Adaptionsaufwand einer bestehenden Lösung. Bei der Auswahl wurde auf Braccio-Kompatibilität geachtet, um den Adaptionsaufwand gering zu halten. Da die inverse Kinematik die komplexeste der zu integrierenden Funktionen darstellt, fiel die Wahl auf CGx-InverseK von cgxeiji~\cite{cgxeiji.2020}, welche einen geometrischen Ansatz ohne DH-Parameter verfolgt. Das hat zum einen den Vorteil, dass dies die Implementierung vereinfacht. Gleichzeitig besteht jedoch keine vollständige Kontrolle über die Orientierung und damit über die Pose des TCPs. Die Implementierung ist unter \url{https://github.com/jakobkrakauer/BraccioLib.git} einsehbar.
 
-Löst IK in der vertikalen 2D-Ebene (R-Z-Ebene) via Kosinussatz
-Basiswinkel separat über atan2(y,x)
-Zwei Lösungen geprüft (Elbow-up / Elbow-down) — nimmt erste gültige
-Anflugwinkel phi: entweder fix vorgegeben oder automatisches Scannen in DEGREE STEP-Schritten
-
-Warum der Arbeitsraum eingeschränkt ist — konkret:
-cppfor (float phi = -DOUBLE PI; phi < DOUBLE PI; phi += DEGREE STEP)
-Das phi-Scanning ist ein Brute-Force-Ansatz — er iteriert durch mögliche Anflugwinkel in festen Schritten. Lösungen die zwischen zwei Schritten liegen werden schlicht verpasst. Kein systematischer Ansatz, keine Optimierung.
-Kein DH-Formalismus: Gelenkwinkel direkt aus Linklängen und Kosinussatz — funktioniert für 3-Link-Arm, aber nicht systematisch erweiterbar auf mehr DOF.
-
-Einschätzung für deine Arbeit
-Die Library ist in der Tabelle als Referenz sinnvoll — sie ist die einzige Braccio-spezifische IK die du bereits implementiert hast. Die Einschränkungen (kein DH, phi-Scanning, kein FK) begründen direkt warum deine Library einen anderen Ansatz braucht.
-
-
-Für die Implementierung der inversen Kinematik wurde die Open-Source-Library CGx-InverseK von cgxeiji gewählt. Im Rahmen der systematischen Literaturrecherche wurden vier IK-Implementierungen für Arduino-Roboterarme identifiziert. CGx-InverseK stellt dabei die einzige aktive und dokumentierte Lösung dar, die explizit für den Arduino TinkerKit Braccio entwickelt und getestet wurde. Weitere Implementierungen wie DrehanM/inverse-kinematics-solver sind zwar ebenfalls Braccio-spezifisch, werden jedoch seit mehreren Jahren nicht mehr gepflegt. Modulare Alternativen wie edisons3608/robot arm bieten eine umfangreichere Funktionalität (FK, IK, Trajektorienplanung), sind jedoch nicht für den Braccio ausgelegt und erfordern eine aufwändige Anpassung der Gelenkgeometrie.
-
-// Offset der Schulter über dem Boden
-zinK0 = ziel - hoehe schulter;
-InverseK.solve(x, y, z in K0, ...)
-
-Ein wichtiger Unterschied zur ursprünglich geplanten DH-basierten Implementierung: CGx-InverseK verwendet keinen Denavit-Hartenberg Formalismus, sondern berechnet die Gelenkwinkel direkt aus den geometrischen Linklängen mittels Kosinussatz. Dies vereinfacht die Implementierung erheblich, da keine 4×4-Transformationsmatrizen aufgestellt werden müssen. Der Nachteil ist eine geringere Allgemeinheit – die Library ist auf 3-Link-Arme mit rotierender Basis beschränkt.
-
-Braccio spezifische berechnungen noch in der Kinematics.cpp vorhanden.
-
-
-Herausforderung 1: Koordinatensystem-Offset
-Der Ursprung von CGx-InverseK liegt bei Gelenk a1 (Schulter), nicht bei der Basis. Die gemessene Schulteröhe von 70mm muss als Offset auf alle z-Koordinaten angewendet werden. Zielkoordinaten unterhalb von 70mm sind daher nicht erreichbar.
-
-Herausforderung 2: IK findet keine Lösung für physisch erreichbare Positionen
-Der Roboter kann per direkter Servo-Ansteuerung Positionen erreichen die die IK als nicht erreichbar markiert. Die genaue Ursache muss noch untersucht werden. 
-TODO: IK Arbeitsraum Analyse
-Die cgxeiji InverseK Library gibt für physisch erreichbare Positionen teilweise false zurück. Die genaue Ursache in der Kosinussatz-Berechnung muss noch untersucht werden. Mögliche Ansätze: Debugging in InverseK.cpp um den genauen Fehlerpunkt zu identifizieren, oder Evaluierung einer alternativen IK-Implementierung.
-
-
-
-
-
-
-Die verwendete CGx-Gcode-RobotArm Library von cgxeiji zeigt einen interessanten Ansatz: Bewegungsbefehle werden im G-Code Format übertragen, wie es auch in industriellen CNC-Systemen und professionellen Robotersteuerungen üblich ist. Der Vorteil liegt in der standardisierten, lesbaren Syntax – G1 X550 Y0 Z150 ist intuitiver als rohe Parameterlisten. Als Ausblick wäre eine Kombination mit YAT denkbar, wobei der User G-Code Befehle direkt im Terminal eingibt und der Arduino diese parst und ausführt.
-
+Die Integration in den Bibliotheksentwurf hat folgende Erkenntnisse geliefert. Die inverse Kinematik lieferte für physisch erreichbare Positionen teilweise keine Lösung, obwohl der Roboter diese per direkter Servo-Ansteuerung anfahren kann. Die genaue Ursache konnte im Rahmen dieses Projekts nicht abschließend geklärt werden. Zudem mussten Braccio-spezifische Berechnungen in der zentralen \texttt{Kinematics.cpp} eingefügt werden, womit das von Loffler et al.~\cite{MarkusS.LofflerDarrenM.DawsonErkanZergerogluandNicolaeP.Costescu.2001} beschriebene Prinzip der Hardware-Portierbarkeit nicht erfüllt werden konnte. Trotz der Braccio-Kompatibilität der gewählten Implementierung war der Adaptionsaufwand verhältnismäßig hoch. Dies ist bei der Auswahl alternativer Lösungsansätze zu berücksichtigen, insbesondere wenn diese nicht explizit für den Braccio entwickelt wurden.
 
 \section{Reflexion und Lernergebnisse}
 
 \subsection{Erworbene Fähigkeiten}
 
-Erworbene Fähigkeiten sind Dinge, die du im Rahmen des Projektes gewonnen hast.
+Im Rahmen dieses Projekts wurde die Methodik der systematischen Literaturrecherche in Anlehnung an den PRISMA-Standard erlernt und praktisch angewendet. Die strukturierte Dokumentation aller Suchschritte ermöglicht es, die Recherche im folgenden Semester nahtlos weiterzuführen. 
 
-Was wurde fachlich und methodisch gelernt?
+Darüber hinaus wurde durch die vergleichende Analyse bestehender Open-Source-Implementierungen ein methodischer Ansatz zur Sichtung und Bewertung vorhandener Systeme entwickelt. Auch wurde ein Überblick über den Stand existierender Lösungen geschaffen sowie ein erstes Verständnis dafür entwickelt, welche Funktionen 
+die zu entwickelnde Library abdecken sollte. 
 
-\subsection{Herausforderungen}
+Zudem wurden Kenntnisse über Aufbau, Ansteuerungsmöglichkeiten und Grenzen des TinkerKit Braccio Roboterarms erworben. Erste Erfahrungen im Bereich des Bibliotheksdesigns entstanden durch die Recherche zu Architekturprinzipien aus der Literatur sowie durch die praktische Entwicklung eines ersten Prototypen.
 
-Welche Schwierigkeiten traten auf?
+\subsection{Herausforderungen und Verbesserungspotenzial}
 
-Workaround schaffen um library und .ino datei trennen zu können. Welche Lösungsansätze gibt es für dieses Problem? 
+Die Integration der inversen Kinematik von cgxeiji~\cite{cgxeiji.2020} in den Bibliotheksentwurf erforderte einen merklichen Anpassungsaufwand und konnte nicht sauber umgesetzt werden. Insbesondere gelang es nicht, hardwarespezifische Elemente vollständig von den mathematischen Berechnungen der inversen Kinematik zu trennen, womit das angestrebte Prinzip der Hardware-Portierbarkeit nicht erfüllt werden konnte. Für eine saubere Trennung bedarf es weiterer Recherche, wobei professioneller umgesetzte Open-Source-Projekte als Inspiration dienen könnten. Ungeklärt blieb zudem die Ursache für den stark eingeschränkten Bewegungsraum des TCPs, der 
+trotz physisch erreichbarer Positionen durch die Implementierung von cgxeiji nicht abgedeckt wurde.
 
-\subsection{Verbesserungspotenzial und Ausblick}
+Die Recherche zu bestehenden Implementierungen hat ihren primären Zweck erfüllt, die Forschungslücke klar zu definieren und bestehende Lösungen gegenüberzustellen und zu bewerten. Da bewährte Implementierungsansätze auf anderen Embedded-Plattformen nicht berücksichtigt wurden, kann eine erweiterte Recherche über Arduino-spezifische Ansätze hinaus sinnvoll sein, um fundierte Designentscheidungen für Vorwärtskinematik, inverse Kinematik, Trajektorienplanung und Geschwindigkeitsprofil treffen zu können.
 
-Was könnte zukünftig besser gemacht werden?
-
-Für die theoretischen Grundlagen der Methoden: Ja, da wäre ein breiterer Blick sinnvoll gewesen. Zum Beispiel:
-
-Wie implementieren andere Embedded-Systeme (STM32, ESP32) IK?
-Gibt es etablierte Ansätze für Trapezprofile auf Mikrocontrollern?
-Wie lösen CNC-Firmware-Projekte (Marlin, GRBL) Trajektorienplanung?
-
-Die Recherche fokussierte sich auf Arduino-spezifische Implementierungen. Für die Methodenrecherche in PPP2 sollte der Suchraum auf andere Embedded-Plattformen (STM32, ESP32) sowie etablierte Open-Source-Firmware-Projekte wie Marlin oder GRBL erweitert werden, um bewährte Implementierungsansätze für IK, Trajektorienplanung und Geschwindigkeitsprofile zu identifizieren.
-
-Ursprünglich war DH-basierte IK geplant — die Recherche hat gezeigt dass geometrische Ansätze für den Braccio ebenso geeignet sind.
-
-trapezprofil doer gibts auch glockenkurfen mit weicher Zeicnung?
-
+Im nächsten Semester ist zunächst eine erweiterte Recherche zu Implementierungsansätzen der definierten Bibliotheksfunktionen auf nicht Arduino-spezifischen Embedded-Plattformen geplant. Darauf aufbauend werden grundlegende Designentscheidungen getroffen, darunter die Wahl zwischen Trapez- und Kosinus-Geschwindigkeitsprofil oder einem geometrischen und einem DH-Parameter-basierten Ansatz für die inverse Kinematik. Anschließend werden die erarbeiteten Teillösungen unter Berücksichtigung der in Abschnitt~\ref{sec:bibliothekskonzept} identifizierten  Architekturprinzipien zu einer vollständigen Library zusammengeführt.
 
 
 % ==================================================
